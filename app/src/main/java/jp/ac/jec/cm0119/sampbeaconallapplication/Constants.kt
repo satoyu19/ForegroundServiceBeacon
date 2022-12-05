@@ -14,4 +14,5 @@ object Constants{
  * BeaconManagerをActivityのthisで取得し、ボタンクリックをトリガーにスタート：OK
  * MonitorNotifier, RangeNotifierをActivityで実装し、activityでBeaconManagerにadd：OK
  *
+ * Androidバージョンによって動作が異なる
  */

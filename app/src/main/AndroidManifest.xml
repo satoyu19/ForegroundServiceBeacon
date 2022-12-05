@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<!--    Android 10 以降では、通常、アプリが表示されていないときにビーコン検出を機能させるため必要-->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
 
     <!--    ビーコン対応していない端末でのインストールを防ぐ-->
     <uses-feature

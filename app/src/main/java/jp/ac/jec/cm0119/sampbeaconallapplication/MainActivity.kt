@@ -20,47 +20,53 @@ class MainActivity : AppCompatActivity(), MonitorNotifier, RangeNotifier {
     private lateinit var beaconManager: BeaconManager
 
     //permission許可の要求
-//    private val permissionResult =
-//        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result: Map<String, Boolean> ->
-//            //permission(権限名), isGrant(有効 or 無効)
-//            checkPermission(result)
-//        }
+    private val permissionResult =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result: Map<String, Boolean> ->
+            //permission(権限名), isGrant(有効 or 無効)
+            checkPermission(result)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        requestPermission()
 
         // TODO: applicationContent →　this RUN and MonitorNotifier, RangeNotifierをActivity実装　Activityでbeaconのセットアップ
         beaconManager = BeaconManager.getInstanceForApplication(applicationContext)
         beaconSetup()
 
         findViewById<Button>(R.id.start).setOnClickListener {
+            // TODO: ここから 追ってみる、バックグラウンドだとどうなるのか
             beaconManager.startMonitoring(BeaconApplication.mRegion)
             beaconManager.startRangingBeacons(BeaconApplication.mRegion)
         }
     }
 
+    //リージョンの問題？
     override fun didEnterRegion(region: Region?) {
-        Log.d("BeaconService", "ビーコン領域内")
-        var monitorTxt = findViewById<TextView>(R.id.monitor)
-        monitorTxt.text = "ビーコン領域内"
+        Log.d("BeaconService", "リンージョン内ビーコン有り" +
+                "")
+//        var monitorTxt = findViewById<TextView>(R.id.monitor)
+//        monitorTxt.text = "ビーコン領域内"
     }
 
     override fun didExitRegion(region: Region?) {
-        Log.d("BeaconService", "ビーコン監視外")
+        Log.d("BeaconService", "リージョン内ビーコン無")
         var rangeTxt = findViewById<TextView>(R.id.range)
-        rangeTxt.text = "ビーコン領域外"
     }
 
     override fun didDetermineStateForRegion(state: Int, region: Region?) {
     }
 
+    //monitorの監視外になっても呼び出されはするが、beaconの検知がされない
     //呼ばれてはいるが、ビーコンを検知してくれない
     override fun didRangeBeaconsInRegion(beacons: MutableCollection<Beacon>?, region: Region?) {
-       Log.d("BeaconService", "Range")
+        Log.d("BeaconService",  "range")
         beacons?.forEach { beacon ->
         var rangeTxt = findViewById<TextView>(R.id.range)
             rangeTxt.text = "距離${beacon.distance}"
+       Log.d("BeaconService",  "距離${beacon.distance}")
         }
     }
 
@@ -110,23 +116,23 @@ class MainActivity : AppCompatActivity(), MonitorNotifier, RangeNotifier {
 
         }
     }
-//    private fun requestPermission() {
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {    //SDKバージョンが31以下の場合
-//            permissionResult.launch(
-//                arrayOf(
-//                    Manifest.permission.ACCESS_FINE_LOCATION,
-//                    Manifest.permission.ACCESS_COARSE_LOCATION,
-//                )
-//            )
-//        } else {
-//            permissionResult.launch(
-//                arrayOf(
-//                    Manifest.permission.ACCESS_FINE_LOCATION,
-//                    Manifest.permission.ACCESS_COARSE_LOCATION,
-//                    Manifest.permission.BLUETOOTH_SCAN,
-//                    Manifest.permission.BLUETOOTH_CONNECT
-//                )
-//            )
-//        }
-//    }
+    private fun requestPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {    //SDKバージョンが31以下の場合
+            permissionResult.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                )
+            )
+        } else {
+            permissionResult.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                )
+            )
+        }
+    }
 }
