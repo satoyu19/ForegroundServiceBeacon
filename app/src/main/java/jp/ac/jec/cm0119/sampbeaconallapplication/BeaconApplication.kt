@@ -9,22 +9,22 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import jp.ac.jec.cm0119.sampbeaconallapplication.Constants.BEACON_UUID_HOME
+import jp.ac.jec.cm0119.sampbeaconallapplication.Constants.BEACON_UUID_SCHOOL
 import org.altbeacon.beacon.*
 
 class BeaconApplication: Application() {    //, MonitorNotifier, RangeNotifier
 
         companion object {
             var insideRegion = false
-            const val IBEACON_FORMAT = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"
 
             val mRegion by lazy {
                 //uuidの例外処理
                 val uuid = try {
-                    Identifier.parse(BEACON_UUID_HOME)
+                    Identifier.parse(BEACON_UUID_SCHOOL)
                 } catch (e: Exception) {
                     null
                 }
-                Region("beacon", uuid, null, null)
+                Region("schoolPhone", uuid, null, null)
             }
         }
 
@@ -34,8 +34,8 @@ class BeaconApplication: Application() {    //, MonitorNotifier, RangeNotifier
 
             if (!beaconManager.isAnyConsumerBound) {    //フォアグラウンドでの検知が開始済みだった場合にアプリが落ちるのを防ぐ
                 //(フォアグラウンドで処理を行っていることをユーザーに認識させる)通知を作成
-                val channelId = "0"
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val channelId = "0"
                     val channel = NotificationChannel(
                         channelId,
                         "Beacon service",

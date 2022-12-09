@@ -5,6 +5,7 @@ plugins {
 
 android {
     namespace 'jp.ac.jec.cm0119.sampbeaconallapplication'
+    //バージョンの範囲の選定
     compileSdk 32
 
     defaultConfig {
